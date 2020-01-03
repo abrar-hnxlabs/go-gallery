@@ -22,11 +22,13 @@ jobs:
         
     - name: Build
       run: go build src/main.go
+      
     - name: Version
       id: version
       run: |
-        export ver=`cat version`
+        export VER=`cat version`
         echo "::set-output name=semver::$VER"
+        
     - name: Release
       id: create_release
       uses: actions/create-release@v1
