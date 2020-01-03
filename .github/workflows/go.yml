@@ -22,15 +22,19 @@ jobs:
         
     - name: Build
       run: go build src/main.go
-    
+    - name: Version
+      id: version
+      run: |
+        export ver=`cat version`
+        echo "::set-output name=semver::$VER"
     - name: Release
       id: create_release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: v1.0.0
-        release_name: Release v1.0.0
+        tag_name: ${{ steps.version.outputs.semver }}
+        release_name: Release ${{ steps.version.outputs.semver }}
         draft: false
         prerelease: false
       
