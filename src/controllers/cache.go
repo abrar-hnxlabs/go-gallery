@@ -13,11 +13,11 @@ func EnsureCacheDir(extraDir string) (string, error) {
 	}
 	
 	if _, err := os.Stat(path); os.IsNotExist(err) {
+		fmt.Printf("Making cache dir, %s\n", path)
 		err := os.MkdirAll(path, 0755)
 		if err != nil {
 			return "" , err
 		}
 	}
-	fmt.Printf("Making cache dir, %s\n", path)
 	return path, nil
 }
