@@ -22,10 +22,19 @@ func main(){
 		return
 	}
 	files := scanner.GetNewFiles()
-	store := controllers.NewStore()
-	fmt.Printf("Number of files: %d \n", len(files))
+	store := controllers.NewStore(cacheDir+"/store.json")
+	
 	total := len(files)
+	totalProcessed := len(store.Data)
+	fmt.Printf("Number of files: %d, skippable: %d \n", total, totalProcessed)
 	for i :=0 ; i < total; i++ {
+		for j :=0; j < totalProcessed; j++ {
+			if files[i] == store.Data[j].File {
+				fmt.Printf("Skipped file number, %d\n", i)
+				continue
+			}
+		}
+		 
 		thumbnailPath, err:= controllers.Thumbnail(files[i], 250)
 		if err != nil {
 			continue

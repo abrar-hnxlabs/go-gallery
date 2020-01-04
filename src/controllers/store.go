@@ -21,8 +21,14 @@ type store struct {
 	Data []fileTuple `json:"data"`
 }
 
-func NewStore() *store {
+func NewStore(path string) *store {
 	s := store{Data: make([]fileTuple, 0)}
+	if len(path) > 0 {
+		data, err := ioutil.ReadFile(path)
+		if err == nil {
+			json.Unmarshal(data, &s)
+		}
+	}
 	return &s
 }
 
@@ -32,6 +38,13 @@ func (s *store) Add(path string, thumbnail string, timetaken time.Time){
 		Thumbnail: thumbnail, 
 		Year: timetaken.Year(), 
 		Month: int(timetaken.Month())}
+
+	for i :=0; i<len(s.Data); i++ {
+		if s.Data[i].File == path {
+			s.Data[i] = f
+		}
+		return
+	}
 	s.Data = append(s.Data, f)
 }
 
@@ -47,10 +60,4 @@ func (s *store) Save(path string) error{
 	f.Write(b)
 	f.Close()
 	return nil
-}
-
-func (s *store) Load(path string) *store {
-	data, _ := ioutil.ReadFile(path)
-	json.Unmarshal(data, s)
-	return s
 }
