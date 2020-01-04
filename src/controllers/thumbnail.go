@@ -29,7 +29,6 @@ func Thumbnail(path string, size int) (string, error) {
 	}
 
 	dstImage := imaging.Resize(srcImage, size, 0, imaging.Lanczos)
-	
 	imaging.Save(dstImage, savePath)
 	return savePath, nil
 }
