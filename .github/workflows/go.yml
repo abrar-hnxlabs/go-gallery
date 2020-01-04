@@ -1,7 +1,9 @@
 name: Go
-on: [push]
+on:
+  push: 
+    branches:
+      - master
 jobs:
-
   build:
     name: Build
     runs-on: ubuntu-latest
@@ -47,6 +49,6 @@ jobs:
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
         asset_path: ./main
-        asset_name: main-binary
+        asset_name: main-${{ steps.version.outputs.semver }}
         asset_content_type: application/octet-stream
       
