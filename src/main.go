@@ -3,13 +3,19 @@ package main
 import (
 	"fmt"
 	"go-gallery/src/controllers"
+	"os"
 	// "github.com/gin-gonic/gin"
 	// "net/http"
 )
 
 func main(){
+	if len(os.Args) < 2 {
+		fmt.Println("Usage: main {images-dir}")
+		os.Exit(1)
+	}
+	imagesDir := os.Args[1]
 	cacheDir, _ := controllers.EnsureCacheDir("")
-	scanner, err := controllers.NewScanner("./images", "\\.(jpg|jpeg)$")
+	scanner, err := controllers.NewScanner(imagesDir, "\\.(jpg|jpeg)$")
 
 	if err != nil {
 		fmt.Println(err)
