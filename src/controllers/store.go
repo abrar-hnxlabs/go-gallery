@@ -12,9 +12,9 @@ import (
 type fileTuple struct {
 	Dir string `json:"dir"`
 	File string `json:"file"`
-	Thumbnail string `json: "thumbnail"`
-	Year int `json: "year"`
-	Month int `json: "month"`
+	Thumbnail string `json:"thumbnail"`
+	Year int `json:"year"`
+	Month int `json:"month"`
 }
 
 type store struct {
@@ -33,9 +33,10 @@ func NewStore(path string) *store {
 }
 
 func (s *store) Add(path string, thumbnail string, timetaken time.Time){
-	f := fileTuple{Dir: filepath.Base(filepath.Dir(path)), 
-		File: path, 
-		Thumbnail: thumbnail, 
+	f := fileTuple{
+		Dir: filepath.Base(filepath.Dir(path)), 
+		File: "/api/photo?f="+path, 
+		Thumbnail: "/api/thumbnail/"+filepath.Base(thumbnail), 
 		Year: timetaken.Year(), 
 		Month: int(timetaken.Month())}
 

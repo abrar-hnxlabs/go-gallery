@@ -3,7 +3,7 @@ module go-gallery
 require (
 	github.com/disintegration/imaging v1.6.2
 	github.com/dsoprea/go-exif v0.0.0-20200102050106-254a6b902a75 // indirect
-	github.com/gin-gonic/gin v1.5.0 // indirect
+	github.com/gin-gonic/gin v1.5.0
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/json-iterator/go v1.1.9 // indirect
 	github.com/leodido/go-urn v1.2.0 // indirect

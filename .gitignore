@@ -17,3 +17,5 @@
 usercache/
 images/
 main
+.env
+node_modules
