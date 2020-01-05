@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 	"go-gallery/src/controllers"
+	"go-gallery/src/handlers"
 	"os"
-	// "github.com/gin-gonic/gin"
-	// "net/http"
+	"github.com/gin-gonic/gin"
 )
 
 func main(){
@@ -15,6 +15,7 @@ func main(){
 	}
 	imagesDir := os.Args[1]
 	cacheDir, _ := controllers.EnsureCacheDir("")
+	thumbsDir, _ := controllers.EnsureCacheDir("thumbnails")
 	scanner, err := controllers.NewScanner(imagesDir, "\\.(jpg|jpeg)$")
 
 	if err != nil {
@@ -43,11 +44,19 @@ func main(){
 		if err == nil {
 			store.Add(files[i], thumbnailPath, taken)
 		}
+		store.Save(cacheDir+"/store.json")
 		fmt.Printf("Processed file %d / %d \n", i+1, total)
 	}
 
-	store.Save(cacheDir+"/store.json")
+	
 
-	// s2 := controllers.NewStore().Load(cacheDir+"/store.json")
-	// fmt.Println(s2)
+	// start the server
+	router := gin.Default()
+	apiGroup := router.Group("/api")
+	apiGroup.Static("/thumbnail", thumbsDir)
+	apiGroup.GET("/photo", handlers.GetPhoto)
+	apiGroup.GET("/data", handlers.GetData)
+
+	router.Static("/ui", "./src/ui/build")
+	router.Run(":8080")
 }
