@@ -38,10 +38,13 @@ func InitScan(){
 			continue
 		}
 		taken, err := controllers.ExifTime(files[i])
-		if err == nil {
-			store.Add(files[i], thumbnailPath, taken)
+		if err != nil {
+			fmt.Println(err)
+			continue
 		}
+		store.Add(files[i], thumbnailPath, taken)
 		store.Save(cacheDir+"/store.json")
 		fmt.Printf("Processed file %d / %d \n", i+1, total)
 	}
+	
 }

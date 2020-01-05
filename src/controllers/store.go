@@ -43,8 +43,8 @@ func (s *store) Add(path string, thumbnail string, timetaken time.Time){
 	for i :=0; i<len(s.Data); i++ {
 		if s.Data[i].File == path {
 			s.Data[i] = f
+			return
 		}
-		return
 	}
 	s.Data = append(s.Data, f)
 }

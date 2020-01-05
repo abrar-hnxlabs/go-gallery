@@ -5,6 +5,7 @@ import (
   "os"
   "regexp"
   "fmt"
+  "strings"
 )
 
 type scanner struct{
@@ -37,7 +38,7 @@ func (s *scanner) GetNewFiles() ([]string) {
 
 func (s *scanner) walkFunc(path string, info os.FileInfo, err error) error {
   
-  if s.fileFilterRegex.MatchString(path) {
+  if s.fileFilterRegex.MatchString(strings.ToLower(path)) {
     s.files = append(s.files, path)
   }
   return err
