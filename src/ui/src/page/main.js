@@ -1,12 +1,30 @@
 import React from "react";
-import { Container, Header, Segment, Divider, Image } from 'semantic-ui-react'
+import { Segment, Container, H2, Overlay,FullScreenImage} from '../components/controls'
+import Section from '../components/section'
+import styled from 'styled-components'
 
+const ImgContainer = styled.div`
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    height: 100%;
+    z-index: 1100;
+    margin: 0 auto;
+`
+
+const CenteredContainer = styled.div`
+    display: block;
+    width: 1200px;
+    margin: 50px auto;
+`
 
 class MainPage extends React.Component {
 
+    
     constructor(props) {
         super(props)
-        this.state = {}
+        this.state = { showOverlay: false, photo: null}
         this.fetchData()
     }
 
@@ -17,100 +35,53 @@ class MainPage extends React.Component {
     }
 
     reformat = (data) => {
-        let master = {}
+        let master = []
         let years = data.map((d) => d.year)
         let uniqueYears = new Set(years)
         uniqueYears.forEach((y) => {
-            master[y] = {}
+            let tempData = { year: y}
             let months = data.filter((d) => d.year === y).map(f => f.month)
             let uniqueMonths = new Set(months)
             uniqueMonths.forEach((m) => {
-                master[y][m] = {}
+                tempData.month = m
                 let groups = data.filter((d) => d.year === y && d.month === m).map(f => f.dir)
                 let uniqueGroups = new Set(groups)
                 uniqueGroups.forEach(g => {
                     let images = data.filter(d => d.year === y && d.month === m && d.dir === g);
-                    master[y][m][g] = images
+                    tempData.images = images
                 })
             })
+            master.push(tempData)
         })
-    
         this.setState({ data: master})
     }
 
-    toMonth = (monthNumber) => {
-        switch(parseInt(monthNumber)){
-            case 1:
-                return "Jan"
-            case 2:
-                return "Feb"
-            case 3:
-                return "Mar"
-            case 4:
-                return "Apr"
-            case 5:
-                return "May"
-            case 6:
-                return "Jun"
-            case 7:
-                return "Jul"
-            case 8:
-                return "Aug"
-            case 9:
-                return "Sep"
-            case 10:
-                return "Oct"
-            case 11:
-                return "Nov"
-            case 12:
-                return "Dec"
-            default:
-                return "Unknown"
-        }
-
-    }
-    renderImages = (images) => {
-        return images.map(i => <Image key={i.thumbnail} src={i.thumbnail} bordered />)
-    }
-    renderGroups = (groups) => {
-        return Object.keys(groups).map(g => (
-            <>
-                <Segment key={g}>
-                    <Header sub>Count {groups[g].length}</Header>
-                    <Image.Group size='small'>
-                            {this.renderImages(groups[g])}
-                    </Image.Group> 
-                </Segment>
-                <Divider />
-            </>
-        ))
+    imageOnClick = (photo) => {
+        this.setState({ showOverlay: true, photo })
     }
 
-    renderMonths = (data) => {
-        return Object.keys(data).map(m => <><Header sub>{this.toMonth(m)}</Header>{this.renderGroups(data[m])}</>)
-    }
-
-    renderYears = (data) => {
-        return Object.keys(data).map((y) => (<>
-            <Header as='h2' key={y} >{y}</Header>
-            {this.renderMonths(data[y])}
-            </>)
-        )
+    closeOverlay = () => {
+        this.setState({ showOverlay: false, photo: null })
     }
     render = () => {
     
-        const { data } = this.state
+        const { data, showOverlay, photo } = this.state
         if(!data) {
             return (
                 <Container>
-                    <Segment><Header as='h2'>Loading Data...</Header></Segment>
+                    <Segment><H2>Loading...</H2></Segment>
                 </Container>
             )
         }
         return(
+        <>
         <Container>
-            { this.renderYears(data)}
-        </Container>)
+            { data.map(m => <Section key={m.year+'-'+m.month}year={m.year} month={m.month} images={m.images} onClick={this.imageOnClick} />)}
+        </Container>
+        <Overlay show={showOverlay} />
+        {photo && <ImgContainer><CenteredContainer><FullScreenImage src = {photo}  onClick={()=> this.closeOverlay()} /></CenteredContainer></ImgContainer>}
+        </>
+        )
     }
 }
 

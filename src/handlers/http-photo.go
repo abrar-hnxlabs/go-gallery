@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"os"
+	"bufio"
 )
 
 func GetPhoto(c *gin.Context) {
@@ -14,4 +15,8 @@ func GetPhoto(c *gin.Context) {
 		})
 		return
 	}
+	f, _ := os.Open(filePath)
+	reader :=  bufio.NewReader(f)
+	size, _ := f.Stat()
+	c.DataFromReader(http.StatusOK, size.Size(), "application/octet-stream", reader, make(map[string]string))
 }
